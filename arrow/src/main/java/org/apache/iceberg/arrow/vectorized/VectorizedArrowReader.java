@@ -238,9 +238,7 @@ public class VectorizedArrowReader implements VectorizedReader<VectorHolder> {
         // Use FixedSizeBinaryVector for binary backed decimal
         type = Types.FixedType.ofLength(primitive.getTypeLength());
       }
-      physicalType =
-          Types.NestedField.of(
-              logicalType.fieldId(), logicalType.isOptional(), logicalType.name(), type);
+      physicalType = Types.NestedField.from(logicalType).ofType(type).build();
     }
 
     return physicalType;
@@ -430,12 +428,6 @@ public class VectorizedArrowReader implements VectorizedReader<VectorHolder> {
   }
 
   @Override
-  public void setRowGroupInfo(
-      PageReadStore source, Map<ColumnPath, ColumnChunkMetaData> metadata, long rowPosition) {
-    setRowGroupInfo(source, metadata);
-  }
-
-  @Override
   public void setRowGroupInfo(PageReadStore source, Map<ColumnPath, ColumnChunkMetaData> metadata) {
     ColumnChunkMetaData chunkMetaData = metadata.get(ColumnPath.get(columnDescriptor.getPath()));
     this.dictionary =
@@ -475,10 +467,6 @@ public class VectorizedArrowReader implements VectorizedReader<VectorHolder> {
     public VectorHolder read(VectorHolder reuse, int numValsToRead) {
       return VectorHolder.dummyHolder(numValsToRead);
     }
-
-    @Override
-    public void setRowGroupInfo(
-        PageReadStore source, Map<ColumnPath, ColumnChunkMetaData> metadata, long rowPosition) {}
 
     @Override
     public void setRowGroupInfo(
@@ -549,12 +537,6 @@ public class VectorizedArrowReader implements VectorizedReader<VectorHolder> {
 
     @Override
     public void setRowGroupInfo(
-        PageReadStore source, Map<ColumnPath, ColumnChunkMetaData> metadata, long rowPosition) {
-      setRowGroupInfo(source, metadata);
-    }
-
-    @Override
-    public void setRowGroupInfo(
         PageReadStore source, Map<ColumnPath, ColumnChunkMetaData> metadata) {
       this.rowStart =
           source
@@ -605,10 +587,6 @@ public class VectorizedArrowReader implements VectorizedReader<VectorHolder> {
 
     @Override
     public void setRowGroupInfo(
-        PageReadStore source, Map<ColumnPath, ColumnChunkMetaData> metadata, long rowPosition) {}
-
-    @Override
-    public void setRowGroupInfo(
         PageReadStore source, Map<ColumnPath, ColumnChunkMetaData> metadata) {}
 
     @Override
@@ -633,10 +611,6 @@ public class VectorizedArrowReader implements VectorizedReader<VectorHolder> {
     public VectorHolder read(VectorHolder reuse, int numValsToRead) {
       return VectorHolder.deletedVectorHolder(numValsToRead);
     }
-
-    @Override
-    public void setRowGroupInfo(
-        PageReadStore source, Map<ColumnPath, ColumnChunkMetaData> metadata, long rowPosition) {}
 
     @Override
     public void setRowGroupInfo(
